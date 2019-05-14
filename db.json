@@ -11,10 +11,39 @@
   ],
   "profile": [
     {
-      "name": "typicode",
-      "age": 16,
+      "id": 2,
+      "name": "Timur",
+      "age": 20,
+      "active": false,
+      "gender": "M"
+    },
+    {
+      "id": 3,
+      "name": "ASdkjkasdasd",
+      "age": 25,
+      "active": false,
+      "gender": "M"
+    },
+    {
+      "id": 4,
+      "name": "Aasdasf",
+      "age": 50,
       "active": true,
-      "gender": "Male"
+      "gender": "F"
+    },
+    {
+      "id": 5,
+      "name": "JASdajsdkasd",
+      "age": 100,
+      "active": true,
+      "gender": "M"
+    },
+    {
+      "id": 6,
+      "name": "Sdasdasd",
+      "age": 29,
+      "active": true,
+      "gender": "F"
     }
   ]
 }

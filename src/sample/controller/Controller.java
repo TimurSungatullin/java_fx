@@ -1,12 +1,10 @@
-package sample;
+package sample.controller;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -17,18 +15,23 @@ import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.LongStringConverter;
+import sample.model.Gender;
+import sample.model.Model;
+import sample.utils.Test;
 
-import javax.swing.*;
 import java.io.IOException;
 
 public class Controller {
+
+    @FXML
+    private Button deleteButton;
+
+    @FXML
+    private TableColumn<Model, Long> idColumn;
 
     @FXML
     private Button addButton;
@@ -45,7 +48,7 @@ public class Controller {
     private TableColumn<Model, String> nameColumn;
 
     @FXML
-    private TableColumn<Model, Integer> ageColumn;
+    private TableColumn<Model, Long> ageColumn;
 
     @FXML
     private TableColumn<Model, Boolean> activeColumn;
@@ -55,30 +58,32 @@ public class Controller {
 
     @FXML
     private void initialize() {
-        initData();
         tableUsers.setEditable(true);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<Model, String>("Name"));
-        nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         nameColumn.setOnEditCommit((CellEditEvent<Model, String> event) -> {
             TablePosition<Model, String> pos = event.getTablePosition();
             String newName = event.getNewValue();
             int row = pos.getRow();
             Model model = event.getTableView().getItems().get(row);
             model.setName(newName);
+            Test.update(model);
         });
-        ageColumn.setCellValueFactory(new PropertyValueFactory<>("Age"));
-        ageColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        ageColumn.setOnEditCommit((CellEditEvent<Model, Integer> event) -> {
-            TablePosition<Model, Integer> pos = event.getTablePosition();
-            Integer newAge = event.getNewValue();
+//        ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        ageColumn.setCellFactory(TextFieldTableCell.forTableColumn(new LongStringConverter()));
+        ageColumn.setOnEditCommit((CellEditEvent<Model, Long> event) -> {
+            TablePosition<Model, Long> pos = event.getTablePosition();
+            Long newAge = event.getNewValue();
             int row = pos.getRow();
             Model model = event.getTableView().getItems().get(row);
             model.setAge(newAge);
+            Test.update(model);
         });
         activeColumn.setCellValueFactory(param -> {
-            Model person = param.getValue();
-            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(person.getActive());
-            booleanProp.addListener((observable, oldValue, newValue) -> person.setActive(newValue));
+            Model model = param.getValue();
+            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(model.getActive());
+            booleanProp.addListener((observable, oldValue, newValue) -> {
+                model.setActive(newValue);
+                Test.update(model);
+            });
             return booleanProp;
         });
         activeColumn.setCellFactory(p -> {
@@ -101,29 +106,32 @@ public class Controller {
             Gender newGender = event.getNewValue();
 
             int row = pos.getRow();
-            Model person = event.getTableView().getItems().get(row);
-
-            person.setGender(newGender.getCode());
+            Model model = event.getTableView().getItems().get(row);
+            model.setGender(newGender.getCode());
+            Test.update(model);
         });
-        tableUsers.setItems(usersData);
+        initData();
     }
 
-    private void initData() {
-        usersData.add(new Model("Qwe", 1, Boolean.TRUE, Gender.FEMALE.getCode()));
-        usersData.add(new Model("Qwe", 1, Boolean.TRUE, Gender.FEMALE.getCode()));
-        usersData.add(new Model("Qwe", 1, Boolean.TRUE, Gender.FEMALE.getCode()));
-        usersData.add(new Model("Qwe", 1, Boolean.TRUE, Gender.FEMALE.getCode()));
-        usersData.add(new Model("Qwe", 1, Boolean.TRUE, Gender.FEMALE.getCode()));
+    public void initData() {
+        usersData = FXCollections.observableArrayList(Test.getAll());
+        tableUsers.setItems(usersData);
     }
 
     public void showDialog(ActionEvent actionEvent) throws IOException {
         Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("edit.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/sample/fxml/edit.fxml"));
         stage.setTitle("Новый пользователь");
-        stage.setResizable(false);
         stage.setScene(new Scene(root));
+        stage.setResizable(false);
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(((Node)actionEvent.getSource()).getScene().getWindow());
-        stage.show();
+        stage.showAndWait();
+    }
+
+    public void deleteRow() {
+        Model model = tableUsers.getSelectionModel().getSelectedItem();
+        Test.deleteById(model.getId());
+        initData();
     }
 }

@@ -1,4 +1,4 @@
-package sample;
+package sample.model;
 
 public enum  Gender {
     FEMALE("F", "Female"), MALE("M", "Male");
@@ -23,6 +23,15 @@ public enum  Gender {
         for (Gender g : Gender.values()) {
             if (g.code.equals(genderCode)) {
                 return g;
+            }
+        }
+        return null;
+    }
+
+    public static String getCodeByText(String text) {
+        for (Gender g : Gender.values()) {
+            if (g.text.equals(text)) {
+                return g.code;
             }
         }
         return null;

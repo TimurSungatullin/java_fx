@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.util.converter.LongStringConverter?>
+<?import sample.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.Controller">
+    <BorderPane>
+        <top>
+            <FlowPane>
+                <BorderPane.margin>
+                    <Insets bottom="5.0" left="25.0" right="25.0" top="5.0" />
+                </BorderPane.margin>
+                <Button fx:id="addButton" onAction="#showDialog" text="Добавить" />
+                <Button fx:id="refreshButton" onAction="#initData" text="Обновить" />
+                <Button fx:id="deleteButton" onAction="#deleteRow" text="Удалить строку" />
+            </FlowPane>
+        </top>
+        <center>
+            <TableView fx:id="tableUsers">
+                <columns>
+                    <TableColumn fx:id="idColumn" editable="false" prefWidth="50.0" text="ID">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="id"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="nameColumn" prefWidth="130.0" text="Name">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="name"/>
+                        </cellValueFactory>
+                        <cellFactory>
+                            <TextFieldTableCell fx:factory="forTableColumn"/>
+                        </cellFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="ageColumn" prefWidth="130.0" text="Age">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="age"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="activeColumn" prefWidth="130.0" text="Active"/>
+                    <TableColumn fx:id="genderColumn" prefWidth="130.0" text="Gender"/>
+                </columns>
+            </TableView>
+        </center>
+    </BorderPane>
+</AnchorPane>
